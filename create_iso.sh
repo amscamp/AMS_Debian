@@ -14,11 +14,11 @@ cd $(dirname $0)
 current_path=$(pwd)
 GUID=$(id --group)
 UUID=$(id --user)
-orig_iso=$current_path/$CURRISO
 new_files=$current_path/iso
 mbr_template=$current_path/isohdpfx.bin
 CURRISO=$(curl -s https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS |awk -F ' ' '{print $2}' | grep 'debian-[0-9]*\.[0-9]*\.[0-9]*\-amd64-netinst.iso')
 CURRVER=$(echo $CURRISO | sed 's|debian-||g' | sed 's|-amd64-netinst.iso||g')
+orig_iso=$current_path/$CURRISO
 # Download Debian netinstaller
 echo $CURRISO
 wget --quiet https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/$CURRISO
@@ -46,11 +46,11 @@ chmod -w -R iso/install.amd/
 # Regenerating md5sum.txt
 cd iso
 ls -la
-cat md5sum.txt
+cat md5sum.txt | wc -l
 chmod +w md5sum.txt
 #find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
 find -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
-chmod -w md5sum.txt
+chmod -w md5sum.txt | wc -l
 cat md5sum.txt
 cd ..
 
