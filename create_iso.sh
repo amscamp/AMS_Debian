@@ -12,8 +12,8 @@ cd $(dirname $0)
 
 # set variables
 current_path=$(pwd)
-GUID=$GID
-UUID=$UID
+GUID=$(id --group)
+UUID=$(id --user)
 orig_iso=$current_path/$CURRISO
 new_files=$current_path/iso
 mbr_template=$current_path/isohdpfx.bin
