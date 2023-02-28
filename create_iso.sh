@@ -12,6 +12,8 @@ cd $(dirname $0)
 
 # set variables
 current_path=$(pwd)
+GUID=$GID
+UUID=$UID
 orig_iso=$current_path/$CURRISO
 new_files=$current_path/iso
 mbr_template=$current_path/isohdpfx.bin
@@ -31,6 +33,7 @@ sudo mount -o loop $CURRISO /mnt/iso
 sudo ls -la /mnt/iso
 mkdir $current_path/iso
 sudo cp -rf /mnt/iso/* $current_path/iso/
+sudo chown -R $UUID:$GUID $current_path/iso/
 
 
 ls -la $current_path/iso/
