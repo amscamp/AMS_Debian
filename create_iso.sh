@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Install prereqs
-sudo apt-get -f install xorriso libarchive-tools bsdtar
+sudo apt-get install xorriso libarchive-tools bsdtar -y
 
 # Make sure relative paths work
 cd $(dirname $0)
@@ -15,7 +15,7 @@ CURRISO=$(curl -s https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA2
 CURRVER=$(echo $CURRISO | sed 's|debian-||g' | sed 's|-amd64-netinst.iso||g')
 # Download Debian netinstaller
 echo $CURRISO
-wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/$CURRISO
+wget --quiet https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/$CURRISO
 
 
 # See https://wiki.debian.org/DebianInstaller/Preseed/EditIso
