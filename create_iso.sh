@@ -30,14 +30,11 @@ wget --quiet https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/$CURRISO
 
 sudo mkdir /mnt/iso
 sudo mount -o loop $CURRISO /mnt/iso
-sudo ls -la /mnt/iso
 mkdir $current_path/iso
 sudo cp -rf /mnt/iso/* $current_path/iso/
 sudo chown -R $UUID:$GUID $current_path/iso/
 
 
-ls -la $current_path/iso/
-ls -la iso/
 # Adding a Preseed File to the Initrd
 chmod +w -R iso/install.amd/
 gunzip iso/install.amd/initrd.gz
@@ -48,9 +45,13 @@ chmod -w -R iso/install.amd/
 
 # Regenerating md5sum.txt
 cd iso
+ls -la
+cat md5sum.txt
 chmod +w md5sum.txt
-find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
+#find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
+find -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
 chmod -w md5sum.txt
+cat md5sum.txt
 cd ..
 
 
