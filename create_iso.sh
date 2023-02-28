@@ -5,7 +5,7 @@ set -e
 
 
 # Install prereqs
-sudo apt-get update && sudo apt-get install xorriso libarchive-tools bsdtar -y
+sudo apt-get update && sudo apt-get install xorriso libarchive-tools -y
 
 # Make sure relative paths work
 cd $(dirname $0)
@@ -27,7 +27,7 @@ wget --quiet https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/$CURRISO
 # Extracting the Initrd from an ISO Image
 
 mkdir iso
-bsdtar -C iso -xf $CURRISO
+tar -C iso -xf $CURRISO
 
 
 # Adding a Preseed File to the Initrd
