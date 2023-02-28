@@ -26,9 +26,10 @@ wget --quiet https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/$CURRISO
 
 # Extracting the Initrd from an ISO Image
 
+sudo mkdir /mnt/iso
+sudo mount -o loop $CURRISO /mnt/iso
 mkdir iso
-tar -C iso -xf $CURRISO
-
+sudo cp -rf /mnt/iso $current_path/iso
 
 # Adding a Preseed File to the Initrd
 chmod +w -R iso/install.amd/
