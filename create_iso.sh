@@ -1,7 +1,11 @@
 #!/bin/bash
 
+#set error
+set -e
+
+
 # Install prereqs
-sudo apt-get install xorriso libarchive-tools bsdtar -y
+sudo apt-get update && sudo apt-get install xorriso libarchive-tools bsdtar -y
 
 # Make sure relative paths work
 cd $(dirname $0)
