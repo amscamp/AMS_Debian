@@ -1,20 +1,29 @@
 #!/bin/bash
 
+# Install prereqs
+apt-get -f install xorriso libarchive-tools
 
 # Make sure relative paths work
 cd $(dirname $0)
 
-
+# set variables
+current_path=$(pwd)
+orig_iso=$current_path/$CURRISO
+new_files=$current_path/iso
+mbr_template=$current_path/isohdpfx.bin
+CURRISO=$(curl -s https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS |awk -F ' ' '{print $2}' | grep 'debian-[0-9]*\.[0-9]*\.[0-9]*\-amd64-netinst.iso')
+CURRVER=$(echo $CURRISO | sed 's|debian-||g' | sed 's|-amd64-netinst.iso||g')
 # Download Debian netinstaller
-curl -O https://laotzu.ftp.acc.umu.se/debian-cd/current/amd64/iso-cd/debian-11.3.0-amd64-netinst.iso
+echo $CURRISO
+wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/$CURRISO
 
 
 # See https://wiki.debian.org/DebianInstaller/Preseed/EditIso
 
 # Extracting the Initrd from an ISO Image
-sudo apt install libarchive-tools
+
 mkdir iso
-bsdtar -C iso -xf debian-11.3.0-amd64-netinst.iso
+bsdtar -C iso -xf $CURRISO
 
 
 # Adding a Preseed File to the Initrd
@@ -34,28 +43,15 @@ cd ..
 
 
 # See https://wiki.debian.org/RepackBootableISO
-
 # Repack as EFI based bootable ISO
-current_path=$(pwd)
-
-orig_iso=$current_path/debian-11.3.0-amd64-netinst.iso
-new_files=$current_path/iso
-new_iso=$current_path/debian-11.3.0-amd64-modified.iso
-mbr_template=$current_path/isohdpfx.bin
-
 
 # Extract MBR template file to disk
 dd if="$orig_iso" bs=1 count=432 of="$mbr_template"
 
-
-# Install xorriso packager
-sudo apt-get -f install xorriso
-
-
 # Run modified contents of file iso/.disk/mkisofs
 xorriso -as mkisofs \
-   -V 'Debian 11.3.0 amd64 n' \
-   -o debian-11.3.0-amd64-modified.iso \
+   -V "Debian $CURRVER amd64 n" \
+   -o debian-$CURRVER-amd64-modified.iso \
    -J -joliet-long -cache-inodes \
    -isohybrid-mbr "$mbr_template" \
    -b isolinux/isolinux.bin \

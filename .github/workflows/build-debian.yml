@@ -1,0 +1,39 @@
+name: build-debian
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**'
+      - '!README.md'
+      - '!LICENSE'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**'
+      - '!README.md'
+      - '!LICENSE'
+
+  repository_dispatch: # Allows action to be triggered via webhook
+
+  workflow_dispatch: # Allows action to be run manually from the Actions tab
+
+jobs:
+  build-debian:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Build Linux Image
+        run: ./create_iso.sh      
+      - name: Build Linux Image
+        run: ls -la
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: debian
+          path: debian-*-amd64-modified.iso
+          retention-days: 1
