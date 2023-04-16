@@ -26,25 +26,18 @@ wget --quiet https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/$CURRISO
 
 # See https://wiki.debian.org/DebianInstaller/Preseed/EditIso
 
-# Extracting the Initrd from an ISO Image
+# Extracting the ISO Image
 
 mkdir $current_path/iso
 sudo xorriso -osirrox on -indev $CURRISO -extract / $current_path/iso
-# sudo chown -R $UUID:$GUID $current_path/iso/
 
+# Change isolinux for autosetup and preseed
 
-# Adding a Preseed File to the Initrd
-sudo chmod +w -R $current_path/iso/install.amd/
-sudo gunzip $current_path/iso/install.amd/initrd.gz
-sudo echo $current_path/preseed.cfg | sudo cpio -H newc -o -A -F $current_path/iso/install.amd/initrd
-sudo gzip $current_path/iso/install.amd/initrd
-sudo chmod -w -R $current_path/iso/install.amd/
-
+sudo sed -i 's|default.*|default auto|g' $current_path/iso/isolinux/isolinux.cfg
+sudo sed -i 's|auto=true|& url=http://raw.githubusercontent.com/amscamp/AMS_Debian/main/preseed.cfg|' $current_path/iso/isolinux/adtxt.cfg
 
 # Regenerating md5sum.txt
-
 sudo chmod +w $current_path/iso/md5sum.txt
-#find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
 sudo sh -c "cd $current_path/iso && find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt"
 sudo chmod -w $current_path/iso/md5sum.txt 
 cat $current_path/iso/md5sum.txt | wc -l
