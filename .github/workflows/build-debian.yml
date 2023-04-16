@@ -32,7 +32,7 @@ jobs:
       - name: Build Linux Image
         run: ls -la
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: debian
           path: debian-*-amd64-modified.iso
