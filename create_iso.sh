@@ -36,7 +36,7 @@ sudo xorriso -osirrox on -indev $CURRISO -extract / $current_path/iso
 # Adding a Preseed File to the Initrd
 sudo chmod +w -R $current_path/iso/install.amd/
 sudo gunzip $current_path/iso/install.amd/initrd.gz
-sudo echo $current_path/preseed.cfg | cpio -H newc -o -A -F $current_path/iso/install.amd/initrd
+sudo echo $current_path/preseed.cfg | sudo cpio -H newc -o -A -F $current_path/iso/install.amd/initrd
 sudo gzip $current_path/iso/install.amd/initrd
 sudo chmod -w -R $current_path/iso/install.amd/
 
