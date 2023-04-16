@@ -29,38 +29,35 @@ wget --quiet https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/$CURRISO
 # Extracting the Initrd from an ISO Image
 
 mkdir $current_path/iso
-xorriso -osirrox on -indev $CURRISO -extract / $current_path/iso
+sudo xorriso -osirrox on -indev $CURRISO -extract / $current_path/iso
 # sudo chown -R $UUID:$GUID $current_path/iso/
 
 
 # Adding a Preseed File to the Initrd
-chmod +w -R iso/install.amd/
-gunzip iso/install.amd/initrd.gz
-echo preseed.cfg | cpio -H newc -o -A -F iso/install.amd/initrd
-gzip iso/install.amd/initrd
-chmod -w -R iso/install.amd/
+sudo chmod +w -R $current_path/iso/install.amd/
+sudo gunzip $current_path/iso/install.amd/initrd.gz
+sudo echo $current_path/preseed.cfg | cpio -H newc -o -A -F $current_path/iso/install.amd/initrd
+sudo gzip $current_path/iso/install.amd/initrd
+sudo chmod -w -R $current_path/iso/install.amd/
 
 
 # Regenerating md5sum.txt
-cd iso
-ls -la
-cat md5sum.txt | wc -l
-chmod +w md5sum.txt
+
+sudo chmod +w $current_path/iso/md5sum.txt
 #find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
-find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
-chmod -w md5sum.txt 
-cat md5sum.txt | wc -l
-cd ..
+sudo sh -c "cd $current_path/iso && find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt"
+sudo chmod -w $current_path/iso/md5sum.txt 
+cat $current_path/iso/md5sum.txt | wc -l
 
 
 # See https://wiki.debian.org/RepackBootableISO
 # Repack as EFI based bootable ISO
 
 # Extract MBR template file to disk
-dd if="$orig_iso" bs=1 count=432 of="$mbr_template"
+sudo dd if="$orig_iso" bs=1 count=432 of="$mbr_template"
 
 # Run modified contents of file iso/.disk/mkisofs
-xorriso -as mkisofs \
+sudo xorriso -as mkisofs \
    -V "Debian $CURRVER amd64 n" \
    -o debian-$CURRVER-amd64-modified.iso \
    -J -joliet-long -cache-inodes \
