@@ -49,7 +49,7 @@ ls -la
 cat md5sum.txt | wc -l
 chmod +w md5sum.txt
 #find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
-find -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
+find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
 chmod -w md5sum.txt 
 cat md5sum.txt | wc -l
 cd ..
