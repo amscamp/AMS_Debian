@@ -3,4 +3,4 @@ Description=Ansible Pull
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/ansible-pull -d /ansibleconfig -i /ansibleconfig/inventory -U https://github.com/amscamp/AMS_Debian_Ansible 
+ExecStart=/usr/bin/ansible-pull -d /ansibleconfig -i /ansibleconfig/inventory -U https://github.com/amscamp/AMS_Debian_Ansible -C dev
