@@ -5,7 +5,7 @@
 In diesem Repository wird die vorbereitete ISO für die neue AMS Debian installation bereitgestellt.
 
 
-Die aktuelle Version kann [hier](https://github.com/amscamp/AMS_Debian_Ansible/releases/latest) heruntergeladen werden.
+Die aktuelle Version kann [hier](https://github.com/amscamp/AMS_Debian/releases/latest) heruntergeladen werden.
 
 Die Ansible Konfiguration ist im Repository [AMS_Debian_Ansible](https://github.com/amscamp/AMS_Debian_Ansible) zu finden.
 

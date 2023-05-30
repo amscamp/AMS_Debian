@@ -9,6 +9,7 @@ on:
       - '**'
       - '!README.md'
       - '!LICENSE'
+      - '!preseed.cfg'
   pull_request:
     branches: 
       - main
@@ -17,6 +18,7 @@ on:
       - '**'
       - '!README.md'
       - '!LICENSE'
+      - '!preseed.cfg'
 
   repository_dispatch: # Allows action to be triggered via webhook
 
