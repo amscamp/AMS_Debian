@@ -76,7 +76,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: ${{ startsWith(github.ref_name, 'dev')	}}
         with:
-          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ github.ref_name }}"
+          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ github.ref_name }}.iso"
           tag_name: ${{ env.DEBIANVERSION }}
           body: current debian ${{ env.DEBIANVERSION }}
           name: Release ${{ env.DEBIANVERSION }}
