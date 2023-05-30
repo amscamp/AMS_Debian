@@ -32,17 +32,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-
       - name: set ref name on push/pull
         if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
         run: echo "DEBIANREFNAME=${{github.ref_name}}" >> $GITHUB_ENV
       - name: set ref name on repository_dispatch
         if: ${{ github.event_name == 'repository_dispatch' }}
         run: echo "DEBIANREFNAME=${{ github.event.client_payload.ref_name }}" >> $GITHUB_ENV
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          ref: ${{ env.DEBIANREFNAME	}}
       - name: Build Linux Image
         run: ./create_iso.sh      
       - name: List Foldercontent
