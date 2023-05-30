@@ -1,10 +1,6 @@
 name: check for new debian release
 
 on:
-  push:
-    branches:
-      - main
-      - dev
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '30 14 * * *'
@@ -32,11 +28,13 @@ jobs:
         if: ${{ env.CURRENT_VERSION != env.NEW_VERSION }}
         run: echo "new version"
       - name: Repository Dispatch
+        if: ${{ env.CURRENT_VERSION != env.NEW_VERSION }}
         uses: peter-evans/repository-dispatch@v2
         with:
           event-type: new-version
           client-payload: '{"ref_name": "main"}'
       - name: Repository Dispatch
+        if: ${{ env.CURRENT_VERSION != env.NEW_VERSION }}
         uses: peter-evans/repository-dispatch@v2
         with:
           event-type: new-version
