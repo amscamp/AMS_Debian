@@ -4,7 +4,7 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '30 14 * * *'
-
+  workflow_dispatch: # Allows action to be run manually from the Actions tab
 
 jobs:
   build_and_publish:
