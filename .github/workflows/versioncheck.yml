@@ -31,5 +31,14 @@ jobs:
       - name: echo new version
         if: ${{ env.CURRENT_VERSION != env.NEW_VERSION }}
         run: echo "new version"
-
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: new-version
+          client-payload: '{"ref_name": "main"}'
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          event-type: new-version
+          client-payload: '{"ref_name": "dev"}'
 

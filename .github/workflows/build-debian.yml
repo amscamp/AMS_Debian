@@ -22,7 +22,8 @@ on:
       - '!preseed.cfg'
       - '!.github/workflows/versioncheck.yml'
 
-  repository_dispatch: # Allows action to be triggered via webhook
+  repository_dispatch:
+    types: [new-version]
 
   workflow_dispatch: # Allows action to be run manually from the Actions tab
 
@@ -35,14 +36,21 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
+
+      - name: set ref name on push/pull
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+        run: echo "DEBIANREFNAME=${{github.ref_name}}" >> $GITHUB_ENV
+      - name: set ref name on repository_dispatch
+        if: ${{ github.event_name == 'repository_dispatch' }}
+        run: echo "DEBIANREFNAME=${{ github.event.client_payload.ref_name }}" >> $GITHUB_ENV
       - name: Build Linux Image
         run: ./create_iso.sh      
       - name: List Foldercontent
         run: ls -la
       - name: rename image
-        run: mv debian-*-amd64-modified.iso debian-$(ls debian-*-modified* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-amd64-ams-${{ github.ref_name	}}.iso
+        run: mv debian-*-amd64-modified.iso debian-$(ls debian-*-modified* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-amd64-ams-${{ env.DEBIANREFNAME	}}.iso
       - name: get release version
-        run: echo "DEBIANVERSION=$(ls debian-*-amd64-ams* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-${{ github.ref_name	}}" >> $GITHUB_ENV
+        run: echo "DEBIANVERSION=$(ls debian-*-amd64-ams* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-${{ env.DEBIANREFNAME	}}" >> $GITHUB_ENV
       - name: echo release version
         run: echo ${{ env.DEBIANVERSION }}
       - name: check if tag already exists
@@ -69,9 +77,9 @@ jobs:
           message: "${{ env.DEBIANVERSION }} release"
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(github.ref_name, 'main')	}}
+        if: ${{ startsWith(env.DEBIANREFNAME, 'main')	}}
         with:
-          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ github.ref_name }}.iso"
+          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ env.DEBIANREFNAME }}.iso"
           tag_name: ${{ env.DEBIANVERSION }}
           body: current debian ${{ env.DEBIANVERSION }}
           name: Release ${{ env.DEBIANVERSION }}
@@ -79,9 +87,9 @@ jobs:
           prerelease: false
       - name: Prerelease
         uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(github.ref_name, 'dev')	}}
+        if: ${{ startsWith(env.DEBIANREFNAME, 'dev')	}}
         with:
-          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ github.ref_name }}.iso"
+          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ env.DEBIANREFNAME }}.iso"
           tag_name: ${{ env.DEBIANVERSION }}
           body: current debian ${{ env.DEBIANVERSION }}
           name: Release ${{ env.DEBIANVERSION }}
