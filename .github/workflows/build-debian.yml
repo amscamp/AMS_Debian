@@ -38,7 +38,7 @@ jobs:
       - name: rename image
         run: mv debian-*-amd64-modified.iso debian-$(ls debian-*-modified* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-amd64-ams-${{ github.ref_name	}}.iso
       - name: get release version
-        run: echo "DEBIANVERSION=$(ls debian-*-modified* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-${{ github.ref_name	}}" >> $GITHUB_ENV
+        run: echo "DEBIANVERSION=$(ls debian-*-amd64-ams* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-${{ github.ref_name	}}" >> $GITHUB_ENV
       - name: echo release version
         run: echo ${{ env.DEBIANVERSION }}
       - name: check if tag already exists
