@@ -60,8 +60,19 @@ jobs:
           message: "${{ env.DEBIANVERSION }} release"
       - name: Release
         uses: softprops/action-gh-release@v1
+        if: ${{ startsWith(github.ref_name, 'main')	}}
         with:
           files: ${{ github.workspace }}/debian-*-amd64-modified.iso
           tag_name: ${{ env.DEBIANVERSION }}
           body: current debian ${{ env.DEBIANVERSION }}
           name: Release ${{ env.DEBIANVERSION }}
+          prerelease: false
+      - name: Prerelease
+        uses: softprops/action-gh-release@v1
+        if: ${{ startsWith(github.ref_name, 'dev')	}}
+        with:
+          files: ${{ github.workspace }}/debian-*-amd64-modified.iso
+          tag_name: ${{ env.DEBIANVERSION }}
+          body: current debian ${{ env.DEBIANVERSION }}
+          name: Release ${{ env.DEBIANVERSION }}
+          prerelease: true
