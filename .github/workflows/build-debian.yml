@@ -2,13 +2,17 @@ name: build-debian
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - main
+      - dev
     paths:
       - '**'
       - '!README.md'
       - '!LICENSE'
   pull_request:
-    branches: [ main ]
+    branches: 
+      - main
+      - dev
     paths:
       - '**'
       - '!README.md'
