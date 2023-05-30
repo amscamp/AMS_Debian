@@ -10,6 +10,7 @@ on:
       - '!README.md'
       - '!LICENSE'
       - '!preseed.cfg'
+      - '!.github/workflows/versioncheck.yml'
   pull_request:
     branches: 
       - main
@@ -19,6 +20,7 @@ on:
       - '!README.md'
       - '!LICENSE'
       - '!preseed.cfg'
+      - '!.github/workflows/versioncheck.yml'
 
   repository_dispatch: # Allows action to be triggered via webhook
 
@@ -73,6 +75,7 @@ jobs:
           tag_name: ${{ env.DEBIANVERSION }}
           body: current debian ${{ env.DEBIANVERSION }}
           name: Release ${{ env.DEBIANVERSION }}
+          target_commitish: main
           prerelease: false
       - name: Prerelease
         uses: softprops/action-gh-release@v1
@@ -82,4 +85,5 @@ jobs:
           tag_name: ${{ env.DEBIANVERSION }}
           body: current debian ${{ env.DEBIANVERSION }}
           name: Release ${{ env.DEBIANVERSION }}
+          target_commitish: dev
           prerelease: true
