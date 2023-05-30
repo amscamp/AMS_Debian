@@ -33,26 +33,31 @@ jobs:
           submodules: recursive
       - name: Build Linux Image
         run: ./create_iso.sh      
-      - name: Build Linux Image
+      - name: List Foldercontent
         run: ls -la
-      - name: get docs version
+      - name: rename image
+        run: mv debian-*-amd64-modified.iso debian-$(ls debian-*-modified* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-amd64-ams-${{ github.ref_name	}}.iso
+      - name: get release version
         run: echo "DEBIANVERSION=$(ls debian-*-modified* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-${{ github.ref_name	}}" >> $GITHUB_ENV
-      - name: echo version
+      - name: echo release version
         run: echo ${{ env.DEBIANVERSION }}
-      - uses: rickstaa/action-create-tag@v1
+      - name: check if tag already exists
+        uses: rickstaa/action-create-tag@v1
         continue-on-error: true
         id: tag_create_first
         with:
           tag: ${{ env.DEBIANVERSION }}
           tag_exists_error: true
           message: "${{ env.DEBIANVERSION }} release"
-      - uses: dev-drprasad/delete-tag-and-release@v1.0 # PRERELEASE is v1.0 and can also be used to test and give us feedback
+      - name: delete tag if nessecary
+        uses: dev-drprasad/delete-tag-and-release@v1.0 # PRERELEASE is v1.0 and can also be used to test and give us feedback
         if: ${{ steps.tag_create_first.outputs.tag_exists || steps.tag_create_first.outcome != 'success' }}
         with:
           tag_name: ${{ env.DEBIANVERSION }} #(required) tag name to delete 
           github_token: ${{ secrets.GITHUB_TOKEN }} # (required) a GitHub token with write access to the repo that needs to be modified
           delete_release: true #(optional) default: true 
-      - uses: rickstaa/action-create-tag@v1
+      - name: (re)create tag
+        uses: rickstaa/action-create-tag@v1
         id: tag_create_second
         with:
           tag: ${{ env.DEBIANVERSION }}
@@ -71,7 +76,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: ${{ startsWith(github.ref_name, 'dev')	}}
         with:
-          files: ${{ github.workspace }}/debian-*-amd64-modified.iso
+          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ github.ref_name }}"
           tag_name: ${{ env.DEBIANVERSION }}
           body: current debian ${{ env.DEBIANVERSION }}
           name: Release ${{ env.DEBIANVERSION }}
