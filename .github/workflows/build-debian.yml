@@ -9,6 +9,7 @@ on:
       - '**'
       - '!README.md'
       - '!LICENSE'
+      - '!Makefile'
       - '!preseed.cfg'
       - '!.github/workflows/versioncheck.yml'
   pull_request:
@@ -19,6 +20,7 @@ on:
       - '**'
       - '!README.md'
       - '!LICENSE'
+      - '!Makefile'
       - '!preseed.cfg'
       - '!.github/workflows/versioncheck.yml'
 
