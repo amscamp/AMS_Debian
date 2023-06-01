@@ -30,8 +30,8 @@ on:
 jobs:
   build-debian:
     strategy:
-    matrix:
-      preseedtype: ["main", "dev"]
+      matrix:
+        preseedtype: ["main", "dev"]
     runs-on: ubuntu-latest
 
     steps:
