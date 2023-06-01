@@ -20,21 +20,8 @@ jobs:
         run: echo "CURRENT_MAIN_VERSION=$(curl -s https://api.github.com/repos/amscamp/AMS_Debian/releases |jq -r 'map(select(.prerelease=false)) | first | .tag_name'| sed 's|-main||g')" >> $GITHUB_ENV
       - name: get new release version
         run: echo "NEW_VERSION=$(curl -s https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS |awk -F ' ' '{print $2}' | grep 'debian-[0-9]*\.[0-9]*\.[0-9]*\-amd64-netinst.iso' | sed 's|debian-||g' | sed 's|-amd64-netinst.iso||g')" >> $GITHUB_ENV
-      - name: echo no new version
-        if: ${{ env.CURRENT_VERSION == env.NEW_VERSION }}
-        run: echo "no new version"
-      - name: echo new version
-        if: ${{ env.CURRENT_VERSION != env.NEW_VERSION }}
-        run: echo "new version"
       - name: Repository Dispatch
         if: ${{ env.CURRENT_MAIN_VERSION != env.NEW_VERSION }}
         uses: peter-evans/repository-dispatch@v2
         with:
           event-type: new-version
-          client-payload: '{"ref_name": "main"}'
-      - name: Repository Dispatch
-        if: ${{ env.CURRENT_DEV_VERSION != env.NEW_VERSION }}
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: new-version
-          client-payload: '{"ref_name": "dev"}'

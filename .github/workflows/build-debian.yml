@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev
     paths:
       - '**'
       - '!README.md'
@@ -15,7 +14,6 @@ on:
   pull_request:
     branches: 
       - main
-      - dev
     paths:
       - '**'
       - '!README.md'
@@ -31,28 +29,24 @@ on:
 
 jobs:
   build-debian:
+    strategy:
+    matrix:
+      preseedtype: ["main", "dev"]
     runs-on: ubuntu-latest
 
     steps:
-      - name: set ref name on push/pull
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
-        run: echo "DEBIANREFNAME=${{github.ref_name}}" >> $GITHUB_ENV
-      - name: set ref name on repository_dispatch
-        if: ${{ github.event_name == 'repository_dispatch' }}
-        run: echo "DEBIANREFNAME=${{ github.event.client_payload.ref_name }}" >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
-          ref: ${{ env.DEBIANREFNAME	}}
       - name: Build Linux Image
-        run: ./create_iso.sh      
+        run: ./create_iso.sh ${{ matrix.preseedtype }} 
       - name: List Foldercontent
         run: ls -la
       - name: rename image
-        run: mv debian-*-amd64-modified.iso debian-$(ls debian-*-modified* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-amd64-ams-${{ env.DEBIANREFNAME	}}.iso
+        run: mv debian-*-amd64-modified.iso debian-$(ls debian-*-modified* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-amd64-ams-${{ matrix.preseedtype }}.iso
       - name: get release version
-        run: echo "DEBIANVERSION=$(ls debian-*-amd64-ams* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-${{ env.DEBIANREFNAME	}}" >> $GITHUB_ENV
+        run: echo "DEBIANVERSION=$(ls debian-*-amd64-ams* |  perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')-${{ matrix.preseedtype }}" >> $GITHUB_ENV
       - name: echo release version
         run: echo ${{ env.DEBIANVERSION }}
       - name: check if tag already exists
@@ -79,21 +73,21 @@ jobs:
           message: "${{ env.DEBIANVERSION }} release"
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(env.DEBIANREFNAME, 'main')	}}
+        if: ${{ startsWith(matrix.preseedtype, 'main')	}}
         with:
-          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ env.DEBIANREFNAME }}.iso"
+          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ matrix.preseedtype }}.iso"
           tag_name: ${{ env.DEBIANVERSION }}
           body: current debian ${{ env.DEBIANVERSION }}
           name: Release ${{ env.DEBIANVERSION }}
-          target_commitish: main
+          target_commitish: ${{ matrix.preseedtype }}
           prerelease: false
       - name: Prerelease
         uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(env.DEBIANREFNAME, 'dev')	}}
+        if: ${{ startsWith(matrix.preseedtype, 'dev')	}}
         with:
-          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ env.DEBIANREFNAME }}.iso"
+          files: "${{ github.workspace }}/debian-*-amd64-ams-${{ matrix.preseedtype }}.iso"
           tag_name: ${{ env.DEBIANVERSION }}
           body: current debian ${{ env.DEBIANVERSION }}
           name: Release ${{ env.DEBIANVERSION }}
-          target_commitish: dev
+          target_commitish: ${{ matrix.preseedtype }}
           prerelease: true

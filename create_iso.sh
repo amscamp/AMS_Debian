@@ -3,6 +3,15 @@
 #set error
 set -e
 
+if [[ $1 = "" ]]
+then
+    echo "no preseed type specified, using default name"
+    preseedurl="http://raw.githubusercontent.com/amscamp/AMS_Debian/main/preseed-main.cfg"
+else
+    preseedurl="http://raw.githubusercontent.com/amscamp/AMS_Debian/main/preseed-$1.cfg"
+fi
+
+
 
 # Install prereqs
 sudo apt-get update && sudo apt-get install xorriso libarchive-tools -y
@@ -34,7 +43,7 @@ sudo xorriso -osirrox on -indev $CURRISO -extract / $current_path/iso
 # Change isolinux for autosetup and preseed
 
 sudo sed -i 's|default.*|default auto|g' $current_path/iso/isolinux/isolinux.cfg
-sudo sed -i 's|auto=true|& url=http://raw.githubusercontent.com/amscamp/AMS_Debian/main/preseed.cfg|' $current_path/iso/isolinux/adtxt.cfg
+sudo sed -i 's|auto=true|& url=$preseedurl|' $current_path/iso/isolinux/adtxt.cfg
 
 # Regenerating md5sum.txt
 sudo chmod +w $current_path/iso/md5sum.txt
