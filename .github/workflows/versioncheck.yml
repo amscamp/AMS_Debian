@@ -3,7 +3,7 @@ name: check for new debian release
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '15 * * * *'
+    - cron:  '30 4 * * *'
   workflow_dispatch: # Allows action to be run manually from the Actions tab
 
 
