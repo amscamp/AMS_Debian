@@ -30,6 +30,7 @@ on:
 jobs:
   build-debian:
     strategy:
+      fail-fast: false
       matrix:
         preseedtype: ["main", "dev"]
     runs-on: ubuntu-latest
