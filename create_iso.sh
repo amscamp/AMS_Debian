@@ -43,7 +43,7 @@ sudo xorriso -osirrox on -indev $CURRISO -extract / $current_path/iso
 # Change isolinux for autosetup and preseed
 
 sudo sed -i 's|default.*|default auto|g' $current_path/iso/isolinux/isolinux.cfg
-sudo sed -i 's|auto=true|& url=$preseedurl|' $current_path/iso/isolinux/adtxt.cfg
+sudo sed -i "s|auto=true|& url=$preseedurl|" $current_path/iso/isolinux/adtxt.cfg
 
 # Regenerating md5sum.txt
 sudo chmod +w $current_path/iso/md5sum.txt
