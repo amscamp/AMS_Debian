@@ -45,6 +45,11 @@ sudo xorriso -osirrox on -indev $CURRISO -extract / $current_path/iso
 sudo sed -i 's|default.*|default auto|g' $current_path/iso/isolinux/isolinux.cfg
 sudo sed -i "s|auto=true|& url=$preseedurl|" $current_path/iso/isolinux/adtxt.cfg
 
+
+# change grub for uefi
+sed -i "/^set theme=\/boot\/grub\/theme\/1$/a menuentry 'amsauto' \$menuentry_id_option 'amsauto' {\n    set background_color=black\n    linux    \/install.amd\/vmlinuz auto=true url=$preseedurl priority=critical vga=788 --- quiet\n    initrd   \/install.amd\/initrd.gz\n}" $current_path/iso/boot/grub/grub.cfg
+
+
 # Regenerating md5sum.txt
 sudo chmod +w $current_path/iso/md5sum.txt
 sudo sh -c "cd $current_path/iso && find -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt"
