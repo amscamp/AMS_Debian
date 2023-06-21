@@ -47,7 +47,7 @@ sudo sed -i "s|auto=true|& url=$preseedurl|" $current_path/iso/isolinux/adtxt.cf
 
 
 # change grub for uefi
-sed -i "/^set theme=\/boot\/grub\/theme\/1$/a menuentry 'amsauto' \$menuentry_id_option 'amsauto' {\n    set background_color=black\n    linux    \/install.amd\/vmlinuz auto=true url=$preseedurl priority=critical vga=788 --- quiet\n    initrd   \/install.amd\/initrd.gz\n}" $current_path/iso/boot/grub/grub.cfg
+sudo sed -i "/^set theme=\/boot\/grub\/theme\/1$/a menuentry 'amsauto' \$menuentry_id_option 'amsauto' {\n    set background_color=black\n    linux    \/install.amd\/vmlinuz auto=true url=$preseedurl priority=critical vga=788 --- quiet\n    initrd   \/install.amd\/initrd.gz\n}" $current_path/iso/boot/grub/grub.cfg
 
 
 # Regenerating md5sum.txt
