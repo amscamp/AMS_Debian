@@ -1,23 +1,31 @@
 #!/bin/bash
 
-#set error
-#set -e
-
+#cleanup ansible /dev/shm fix
 echo "In Target script: unmount /dev/shm"
-umount /dev/shm
-status=$?
-[ $status -eq 0 ] && echo "command successful" || echo "command unsuccessful"
+umount /dev/shm || true
+umount_status=$?
 echo "In Target script: restore fstab"
 cp -rf /etc/fstabbackup /etc/fstab
-status=$?
-[ $status -eq 0 ] && echo "command successful" || echo "command unsuccessful"
+fstab_restore_status=$?
 echo "In Target script: remove temporary /dev/shm folder"
 rm -rf /dev/shm
-status=$?
-[ $status -eq 0 ] && echo "command successful" || echo "command unsuccessful"
+shm_remove_status=$?
 echo "In Target script: remove fstab backup"
 rm -rf /etc/fstabbackup
-status=$?
-[ $status -eq 0 ] && echo "command successful" || echo "command unsuccessful"
+fstab_backup_delete_status=$?
 
-exit 111
+
+if [[ $umount_status -ne 0 || $fstab_restore_status -ne 0 || $shm_remove_status -ne 0 || $fstab_backup_delete_status -ne 0 ]]; then
+
+    echo "errors in afteransible.sh detected. Exit codes:"
+    echo "umount_status: $umount_status"
+    echo "fstab_restore_status: $fstab_restore_status"
+    echo "shm_remove_status: $shm_remove_status"
+    echo "fstab_backup_delete_status: $fstab_backup_delete_status"
+    exit 111
+
+else
+    echo "afteransible.sh completed successfully"
+
+fi
+

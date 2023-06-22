@@ -9,8 +9,12 @@ on:
       - '!README.md'
       - '!LICENSE'
       - '!Makefile'
-      - '!preseed.cfg'
+      - '!preseed-main.cfg'
+      - '!preseed-dev.cfg'
       - '!.github/workflows/versioncheck.yml'
+      - '!.github/dependabot.yml'
+      - '!in-target-scripts'
+      - '!in-target-scripts/**'
   pull_request:
     branches: 
       - main
@@ -19,8 +23,12 @@ on:
       - '!README.md'
       - '!LICENSE'
       - '!Makefile'
-      - '!preseed.cfg'
+      - '!preseed-main.cfg'
+      - '!preseed-dev.cfg'
       - '!.github/workflows/versioncheck.yml'
+      - '!.github/dependabot.yml'
+      - '!in-target-scripts'
+      - '!in-target-scripts/**'
 
   repository_dispatch:
     types: [new-version]
