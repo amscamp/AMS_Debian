@@ -61,6 +61,7 @@ jobs:
       - name: echo release version
         run: echo ${{ env.DEBIANVERSION }}
       - name: check if tag already exists
+        if: ${{ github.event_name != 'pull_request' }}
         uses: rickstaa/action-create-tag@v1
         continue-on-error: true
         id: tag_create_first
@@ -70,12 +71,13 @@ jobs:
           message: "${{ env.DEBIANVERSION }} release"
       - name: delete tag if nessecary
         uses: dev-drprasad/delete-tag-and-release@v1.0 # PRERELEASE is v1.0 and can also be used to test and give us feedback
-        if: ${{ steps.tag_create_first.outputs.tag_exists || steps.tag_create_first.outcome != 'success' }}
+        if: ${{ steps.tag_create_first.outputs.tag_exists || steps.tag_create_first.outcome != 'success' }} &&  ${{ github.event_name != 'pull_request' }}
         with:
           tag_name: ${{ env.DEBIANVERSION }} #(required) tag name to delete 
           github_token: ${{ secrets.GITHUB_TOKEN }} # (required) a GitHub token with write access to the repo that needs to be modified
           delete_release: true #(optional) default: true 
       - name: (re)create tag
+        if: ${{ github.event_name != 'pull_request' }}
         uses: rickstaa/action-create-tag@v1
         id: tag_create_second
         with:
@@ -84,7 +86,7 @@ jobs:
           message: "${{ env.DEBIANVERSION }} release"
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(matrix.preseedtype, 'main')	}}
+        if: ${{ startsWith(matrix.preseedtype, 'main')	}} && ${{ github.event_name != 'pull_request' }}
         with:
           files: "${{ github.workspace }}/debian-*-amd64-ams-${{ matrix.preseedtype }}.iso"
           tag_name: ${{ env.DEBIANVERSION }}
@@ -94,7 +96,7 @@ jobs:
           prerelease: false
       - name: Prerelease
         uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(matrix.preseedtype, 'dev')	}}
+        if: ${{ startsWith(matrix.preseedtype, 'dev')	}} && ${{ github.event_name != 'pull_request' }}
         with:
           files: "${{ github.workspace }}/debian-*-amd64-ams-${{ matrix.preseedtype }}.iso"
           tag_name: ${{ env.DEBIANVERSION }}
