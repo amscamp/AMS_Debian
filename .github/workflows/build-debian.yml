@@ -71,7 +71,8 @@ jobs:
           message: "${{ env.DEBIANVERSION }} release"
       - name: delete tag if nessecary
         uses: dev-drprasad/delete-tag-and-release@v1.0 # PRERELEASE is v1.0 and can also be used to test and give us feedback
-        if: ${{ steps.tag_create_first.outputs.tag_exists || steps.tag_create_first.outcome != 'success' }} &&  ${{ github.event_name != 'pull_request' }}
+       # if: ${{ steps.tag_create_first.outputs.tag_exists || steps.tag_create_first.outcome != 'success' }} &&  ${{ github.event_name != 'pull_request' }}
+        if: ${{ (steps.tag_create_first.outputs.tag_exists || steps.tag_create_first.outcome != 'success') && github.event_name != 'pull_request' }}
         with:
           tag_name: ${{ env.DEBIANVERSION }} #(required) tag name to delete 
           github_token: ${{ secrets.GITHUB_TOKEN }} # (required) a GitHub token with write access to the repo that needs to be modified
